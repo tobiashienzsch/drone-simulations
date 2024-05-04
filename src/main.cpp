@@ -92,9 +92,10 @@ static auto compressGas() -> void
     // # Calculate moles of hydrogen
     // n = (P * V) / (R * T)
 
-    QuantityOf<isq::pressure> auto P = 200.0 * 100'000.0 * Pa;  // 2e+7 * Pa;
-    QuantityOf<isq::volume> auto V   = 5.0 * l;
     auto R = (1.0 * si::si2019::boltzmann_constant * si::si2019::avogadro_constant).in(J / (mol * K));
+
+    QuantityOf<isq::pressure> auto P                                    = 200.0 * 100'000.0 * Pa;
+    QuantityOf<isq::volume> auto V                                      = 5.0 * l;
     QuantityOf<isq::thermodynamic_temperature> auto T                   = 298.0 * K;
     QuantityOf<isq::amount_of_substance> auto moles                     = (P * V) / (R * T);
     QuantityOf<isq::mass / isq::amount_of_substance> auto molecularMass = 2.0 * g / mol;
