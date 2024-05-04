@@ -1,9 +1,10 @@
-#include <mp-units/ostream.h>
+#include <fmt/format.h>
+#include <fmt/os.h>
+
+#include <mp-units/format.h>
 #include <mp-units/systems/international.h>
 #include <mp-units/systems/isq.h>
 #include <mp-units/systems/si.h>
-
-#include <iostream>
 
 using namespace mp_units;
 using namespace mp_units::si::unit_symbols;
@@ -39,20 +40,22 @@ static auto dronePowerConsumption(Drone drone) -> void
 
     QuantityOf<isq::energy> auto energy = totalPower * flightTime;
 
-    std::cout << "Drone power consumption:\n";
-    std::cout << "------------------------\n";
-    std::cout << "Weight:      " << drone.takeoffWeight.in(kg) << '\n';
-    std::cout << "Efficiency:  " << drone.efficiency << '\n';
-    std::cout << "Gravity:     " << gravity.in(m / s2) << '\n' << '\n';
-    std::cout << "Thrust:      " << thrust.in(N) << '\n' << '\n';
-    std::cout << "Velocity:    " << velocity.in(km / h) << '\n' << '\n';
+    fmt::println("Drone power consumption:");
+    fmt::println("------------------------");
+    fmt::println("Weight:      {}", drone.takeoffWeight.in(kg));
+    fmt::println("Efficiency:  {}", drone.efficiency);
+    fmt::println("Gravity:     {}\n", gravity.in(m / s2));
 
-    std::cout << "Power:       " << totalPower.in(W) << '\n';
-    std::cout << "Power-Ratio: " << powerRatio.in(W / kg) << '\n' << '\n';
+    fmt::println("Thrust:      {}\n", thrust.in(N));
 
-    std::cout << "Time:        " << flightTime.in(h) << '\n';
-    std::cout << "Energy:      " << energy.in(kW * h) << '\n';
-    std::cout << '\n';
+    fmt::println("Velocity:    {}\n", velocity.in(km / h));
+
+    fmt::println("Power:       {}", totalPower.in(W));
+    fmt::println("Power-Ratio: {}\n", powerRatio.in(W / kg));
+
+    fmt::println("Time:        {}", flightTime.in(h));
+    fmt::println("Energy:      {}", energy.in(kW * h));
+    fmt::println("");
 }
 
 static auto hydrogenEnergyPerVolume() -> void
@@ -64,19 +67,19 @@ static auto hydrogenEnergyPerVolume() -> void
     QuantityOf<isq::energy> auto energyGas    = hydrogenEnergy(densityGas, volume);
     QuantityOf<isq::energy> auto energyLiquid = hydrogenEnergy(densityLiquid, volume);
 
-    std::cout << "Hydrogen energy per volume:\n";
-    std::cout << "---------------------------\n";
-    std::cout << "Volume:         " << volume << '\n';
-    std::cout << "Density Gas:    " << densityGas << '\n';
-    std::cout << "Mass Gas:       " << (densityGas * volume).in(g) << '\n';
-    std::cout << "Energy Gas:     " << energyGas.in(kW * h) << '\n' << '\n';
+    fmt::println("Hydrogen energy per volume:");
+    fmt::println("---------------------------");
+    fmt::println("Volume:         {}", volume);
+    fmt::println("Density Gas:    {}", densityGas);
+    fmt::println("Mass Gas:       {}", (densityGas * volume).in(g));
+    fmt::println("Energy Gas:     {}\n", energyGas.in(kW * h));
 
-    std::cout << "Density Liquid: " << densityLiquid << '\n';
-    std::cout << "Mass Liquid:    " << (densityLiquid * volume).in(g) << '\n';
-    std::cout << "Energy Liquid:  " << energyLiquid.in(kW * h) << '\n' << '\n';
+    fmt::println("Density Liquid: {}", densityLiquid);
+    fmt::println("Mass Liquid:    {}", (densityLiquid * volume).in(g));
+    fmt::println("Energy Liquid:  {}\n", energyLiquid.in(kW * h));
 
-    std::cout << "Increase:       " << energyLiquid / energyGas << "x\n";
-    std::cout << '\n';
+    fmt::println("Increase:       {}x", energyLiquid / energyGas);
+    fmt::println("");
 }
 
 static auto compressGas() -> void
@@ -97,15 +100,15 @@ static auto compressGas() -> void
     QuantityOf<isq::mass / isq::amount_of_substance> auto molecularMass = 2.0 * g / mol;
     QuantityOf<isq::mass> auto mass                                     = moles * molecularMass;
 
-    std::cout << "Compress gas:\n";
-    std::cout << "-------------\n";
-    std::cout << "Pressure:     " << P << '\n';
-    std::cout << "Volume:       " << V << '\n';
-    std::cout << "Gas Constant: " << R << '\n';
-    std::cout << "Temperature:  " << T << '\n';
-    std::cout << "Moles:        " << moles << '\n';
-    std::cout << "Mass:         " << mass << '\n';
-    std::cout << '\n';
+    fmt::println("Compress gas:");
+    fmt::println("-------------");
+    fmt::println("Pressure:     {}", P);
+    fmt::println("Volume:       {}", V);
+    fmt::println("Gas Constant: {}", R);
+    fmt::println("Temperature:  {}", T);
+    fmt::println("Moles:        {}", moles);
+    fmt::println("Mass:         {}", mass);
+    fmt::println("");
 }
 
 struct SolarPanel
@@ -121,20 +124,18 @@ static auto powerOutput(SolarPanel panel) -> void
     QuantityOf<isq::time> auto duration = 5.0 * h;
     QuantityOf<isq::energy> auto energy = power * duration;
 
-    std::cout << "Solar panel:\n";
-    std::cout << "------------\n";
-    std::cout << "Area:       " << panel.area.in(m2) << '\n';
-    std::cout << "Irradiance: " << panel.irradiance << '\n';
-    std::cout << "Efficiency: " << panel.efficiency << '\n';
-    std::cout << "Power:      " << power.in(W) << '\n';
-    std::cout << "Energy:     " << energy.in(W * h) << '\n';
-    std::cout << '\n';
+    fmt::println("Solar panel:");
+    fmt::println("------------");
+    fmt::println("Area:       {}", panel.area.in(m2));
+    fmt::println("Irradiance: {}", panel.irradiance);
+    fmt::println("Efficiency: {}", panel.efficiency);
+    fmt::println("Power:      {}", power.in(W));
+    fmt::println("Energy:     {}", energy.in(W * h));
+    fmt::println("");
 }
 
 auto main() -> int
 {
-    std::cout.setf(std::ios_base::fixed, std::ios_base::floatfield);
-
     compressGas();
     hydrogenEnergyPerVolume();
     dronePowerConsumption({
