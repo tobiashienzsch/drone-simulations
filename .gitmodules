@@ -1,0 +1,4 @@
+[submodule "3rd_party/cmake-conan"]
+	path = 3rd_party/cmake-conan
+	url = https://github.com/conan-io/cmake-conan.git
+	branch = develop2

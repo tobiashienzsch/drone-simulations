@@ -1,0 +1,12 @@
+[requires]
+mp-units/2.2.0@mpusz/testing
+
+[options]
+mp-units/*:std_format=False
+
+[layout]
+cmake_layout
+
+[generators]
+CMakeDeps
+CMakeToolchain
