@@ -30,8 +30,8 @@ temperatureAt(QuantityOf<isq::altitude> auto altitude) -> QuantityOf<isq::thermo
 {
     using namespace mp_units::si::unit_symbols;
 
-    static constexpr auto T_0 = 288.15 * K;      // sea-level standard temperature
-    static constexpr auto L   = 0.0065 * K / m;  // standard temperature lapse rate in the troposphere
+    constexpr auto T_0 = 288.15 * K;      // sea-level standard temperature
+    constexpr auto L   = 0.0065 * K / m;  // standard temperature lapse rate in the troposphere
 
     return T_0 - L * altitude;
 }
@@ -40,17 +40,26 @@ temperatureAt(QuantityOf<isq::altitude> auto altitude) -> QuantityOf<isq::thermo
 {
     using namespace mp_units::si::unit_symbols;
 
-    static constexpr auto P_0 = 101325.0 * Pa;         // sea-level standard atmospheric pressure
-    static constexpr auto T_0 = 288.15 * K;            // sea-level standard temperature
-    static constexpr auto L   = 0.0065 * K / m;        // standard temperature lapse rate in the troposphere
-    static constexpr auto M   = 0.0289644 * kg / mol;  // molar mass of Earth's air
-    static constexpr auto R   = (1.0 * universal_gas_constant).in(J / (mol * K));  // universal gas constant
+    constexpr auto P_0 = 101325.0 * Pa;                                     // sea-level standard atmospheric pressure
+    constexpr auto T_0 = 288.15 * K;                                        // sea-level standard temperature
+    constexpr auto M   = 0.0289644 * kg / mol;                              // molar mass of Earth's air
+    constexpr auto R_0 = (1.0 * universal_gas_constant).in(J / (mol * K));  // universal gas constant
+    constexpr auto g   = (1.0 * si::standard_gravity).in(m / s2);           // gravity
 
-    auto const base = T_0 / (T_0 + L * altitude.in(si::metre));
-    auto const exp  = (1.0 * si::standard_gravity * M) / (R * L);
+    return P_0 * exp(-(g * altitude.in(m)*M) / (T_0 * R_0));
+}
 
-    auto const P = P_0 * std::pow(base.numerical_value_ref_in(base.unit), exp.numerical_value_ref_in(exp.unit));
-    return P;
+[[nodiscard]] constexpr auto densityAt(QuantityOf<isq::altitude> auto altitude) -> QuantityOf<isq::density> auto
+{
+    using namespace mp_units::si::unit_symbols;
+
+    constexpr auto R = 1.0 * universal_gas_constant;  // universal gas constant
+    constexpr auto M = 0.0289644 * kg / mol;          // molar mass of Earth's air
+
+    QuantityOf<isq::pressure> auto const P                  = pressureAt(altitude);
+    QuantityOf<isq::thermodynamic_temperature> auto const T = temperatureAt(altitude);
+
+    return (P * M) / (R * T);
 }
 
 }  // namespace tdr
