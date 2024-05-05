@@ -14,26 +14,35 @@ namespace tdr
 
 struct SolarPanel
 {
-    quantity<square(si::metre)> area;
-    quantity<si::watt / square(si::metre)> irradiance;
-    quantity<one> efficiency;
+    quantity<isq::width[si::metre]> width;
+    quantity<isq::height[si::metre]> height;
+    quantity<isq::maximum_efficiency[percent]> efficiency;
 };
 
-inline auto powerOutput(SolarPanel panel) -> void
+struct SolarPanelLocation
+{
+    quantity<isq::irradiance[si::watt / square(si::metre)]> irradiance;
+    quantity<isq::time[si::hour]> daylight;
+};
+
+inline auto powerOutput(SolarPanel const& panel, SolarPanelLocation const& location) -> void
 {
     using namespace mp_units::si::unit_symbols;
 
-    QuantityOf<isq::power> auto power   = panel.area * panel.irradiance * panel.efficiency;
-    QuantityOf<isq::time> auto duration = 5.0 * h;
+    QuantityOf<isq::area> auto area     = panel.width * panel.height;
+    QuantityOf<isq::power> auto power   = area * location.irradiance * panel.efficiency;
+    QuantityOf<isq::time> auto duration = location.daylight;
     QuantityOf<isq::energy> auto energy = power * duration;
 
     fmt::println("Solar panel:");
     fmt::println("------------");
-    fmt::println("Area:       {}", panel.area.in(m2));
-    fmt::println("Irradiance: {}", panel.irradiance);
+    fmt::println("Width:      {::N[.3f]}", panel.width.in(cm));
+    fmt::println("Height:     {::N[.3f]}", panel.height.in(cm));
+    fmt::println("Area:       {::N[.3f]}", area.in(m2));
+    fmt::println("Irradiance: {}", location.irradiance);
     fmt::println("Efficiency: {}", panel.efficiency);
-    fmt::println("Power:      {}", power.in(W));
-    fmt::println("Energy:     {}", energy.in(W * h));
+    fmt::println("Power:      {::N[.3f]}", power.in(W));
+    fmt::println("Energy:     {::N[.3f]}", energy.in(W * h));
     fmt::println("");
 }
 

@@ -1,5 +1,6 @@
 #include "Atmosphere.hpp"
 #include "Hydrogen.hpp"
+#include "Microgreens.hpp"
 #include "QuadCopter.hpp"
 #include "SolarPanel.hpp"
 
@@ -14,13 +15,9 @@ auto main() -> int
 {
     using namespace mp_units;
     using namespace mp_units::si::unit_symbols;
+    using namespace tdr::finance::unit_symbols;
 
     // tdr::compressGas();
-    // tdr::powerOutput(tdr::SolarPanel{
-    //     .area       = 100.0 * square(cm),
-    //     .irradiance = 1'000.0 * W / m2,
-    //     .efficiency = 18.0 * percent,
-    // });
 
     static constexpr auto uav = tdr::QuadCopter{
         .weight                = 10.0 * kg,
@@ -42,6 +39,29 @@ auto main() -> int
     tdr::hydrogenEnergyIn(5.0 * l);
     tdr::hydrogenEnergyIn(10.0 * l);
     tdr::hydrogenEnergyIn(25.0 * l);
+
+    tdr::harvistReport({
+        .seeds     = 13.0 * g,
+        .price     = 18.0 * EUR / kg,
+        .light     = 8.0 * h / d,
+        .growPhase = 10.0 * d,
+        .restPhase = 2.0 * d,
+        .harvist   = 325.0 * g,
+        .msrp      = 13.0 * EUR / kg,
+    });
+
+    static constexpr auto location = tdr::SolarPanelLocation{
+        .irradiance = 1'000.0 * W / m2,
+        .daylight   = 12.0 * h,
+    };
+
+    static constexpr auto panel = tdr::SolarPanel{
+        .width      = 500.0 * cm,
+        .height     = 100.0 * cm,
+        .efficiency = 18.0 * percent,
+    };
+
+    tdr::powerOutput(panel, location);
 
     return EXIT_SUCCESS;
 }
