@@ -12,17 +12,12 @@ auto main() -> int
 
     tdr::compressGas();
     tdr::hydrogenEnergyPerVolume();
-    tdr::dronePowerConsumption({
-        .takeoffWeight = 3.0 * kg,
-        .speed         = 150.0 * km / h,
-        .efficiency    = 80.0 * percent,
-    });
 
-    tdr::powerOutput(tdr::SolarPanel{
-        .area       = 100.0 * square(cm),
-        .irradiance = 1'000.0 * W / m2,
-        .efficiency = 18.0 * percent,
-    });
+    // tdr::powerOutput(tdr::SolarPanel{
+    //     .area       = 100.0 * square(cm),
+    //     .irradiance = 1'000.0 * W / m2,
+    //     .efficiency = 18.0 * percent,
+    // });
 
     tdr::powerConsumption({
         .weight                = 2.0 * kg,
@@ -33,8 +28,8 @@ auto main() -> int
     });
 
     tdr::powerConsumption({
-        .weight                = 4.0 * kg,
-        .speed                 = 100.0 * km / h,
+        .weight                = 2.0 * kg,
+        .speed                 = 200.0 * km / h,
         .frontalArea           = 10.0 * 30.0 * square(cm),
         .thrustEfficiency      = 130.0 * percent,
         .aerodynamicEfficiency = 70.0 * percent,
