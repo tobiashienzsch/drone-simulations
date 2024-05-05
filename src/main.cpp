@@ -16,24 +16,32 @@ auto main() -> int
     using namespace mp_units::si::unit_symbols;
 
     // tdr::compressGas();
-    // tdr::hydrogenEnergyPerVolume();
     // tdr::powerOutput(tdr::SolarPanel{
     //     .area       = 100.0 * square(cm),
     //     .irradiance = 1'000.0 * W / m2,
     //     .efficiency = 18.0 * percent,
     // });
 
-    constexpr auto const uav = tdr::QuadCopter{
-        .weight                = 2.0 * kg,
-        .speed                 = 200.0 * km / h,
-        .frontalArea           = 10.0 * 30.0 * square(cm),
+    static constexpr auto uav = tdr::QuadCopter{
+        .weight                = 10.0 * kg,
+        .frontalArea           = 30.0 * 30.0 * square(cm),
         .thrustEfficiency      = 130.0 * percent,
         .aerodynamicEfficiency = 70.0 * percent,
     };
 
-    tdr::powerConsumption(uav, {.distance = 3'000.0 * km, .altitude = 0.0 * m});
-    tdr::powerConsumption(uav, {.distance = 3'000.0 * km, .altitude = 1'000.0 * m});
-    tdr::powerConsumption(uav, {.distance = 3'000.0 * km, .altitude = 2'000.0 * m});
+    static constexpr auto flight = tdr::Flight{
+        .distance = 3'000.0 * km,
+        .altitude = 1'000.0 * m,
+        .speed    = 100.0 * km / h,
+    };
+
+    tdr::estimatePowerConsumption(uav, flight.withAltitude(500.0 * m));
+    tdr::estimatePowerConsumption(uav, flight.withAltitude(1'000.0 * m));
+    tdr::estimatePowerConsumption(uav, flight.withAltitude(1'500.0 * m));
+
+    tdr::hydrogenEnergyIn(5.0 * l);
+    tdr::hydrogenEnergyIn(10.0 * l);
+    tdr::hydrogenEnergyIn(25.0 * l);
 
     return EXIT_SUCCESS;
 }

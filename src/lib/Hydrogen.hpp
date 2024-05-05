@@ -20,29 +20,28 @@ constexpr auto hydrogenEnergy(QuantityOf<isq::mass_density> auto density,
     return density * volume * lowerHeatingValue;
 }
 
-inline auto hydrogenEnergyPerVolume() -> void
+inline auto hydrogenEnergyIn(QuantityOf<isq::volume> auto volume) -> void
 {
     using namespace mp_units::si::unit_symbols;
 
-    QuantityOf<isq::volume> auto volume         = 5.0 * l;
-    QuantityOf<isq::density> auto densityGas    = 0.08988 * kg / m3;
-    QuantityOf<isq::density> auto densityLiquid = 70.85 * kg / m3;
+    static constexpr QuantityOf<isq::density> auto densityGas    = 0.08988 * kg / m3;
+    static constexpr QuantityOf<isq::density> auto densityLiquid = 70.85 * kg / m3;
 
     QuantityOf<isq::energy> auto energyGas    = hydrogenEnergy(densityGas, volume);
     QuantityOf<isq::energy> auto energyLiquid = hydrogenEnergy(densityLiquid, volume);
 
     fmt::println("Hydrogen energy per volume:");
-    fmt::println("---------------------------");
-    fmt::println("Volume:         {}", volume);
-    fmt::println("Density Gas:    {}", densityGas);
-    fmt::println("Mass Gas:       {}", (densityGas * volume).in(g));
-    fmt::println("Energy Gas:     {}\n", energyGas.in(kW * h));
+    fmt::println("--------------------------");
+    fmt::println("Volume:         {::N[.3f]}", volume);
+    fmt::println("Density Gas:    {::N[.3f]}", densityGas);
+    fmt::println("Mass Gas:       {::N[.3f]}", (densityGas * volume).in(g));
+    fmt::println("Energy Gas:     {::N[.3f]}\n", energyGas.in(kW * h));
 
-    fmt::println("Density Liquid: {}", densityLiquid);
-    fmt::println("Mass Liquid:    {}", (densityLiquid * volume).in(g));
-    fmt::println("Energy Liquid:  {}\n", energyLiquid.in(kW * h));
+    fmt::println("Density Liquid: {::N[.3f]}", densityLiquid);
+    fmt::println("Mass Liquid:    {::N[.3f]}", (densityLiquid * volume).in(g));
+    fmt::println("Energy Liquid:  {::N[.3f]}\n", energyLiquid.in(kW * h));
 
-    fmt::println("Increase:       {}x", energyLiquid / energyGas);
+    fmt::println("Increase:       {::N[.3f]}x", energyLiquid / energyGas);
     fmt::println("");
 }
 
