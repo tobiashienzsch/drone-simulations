@@ -17,19 +17,19 @@ namespace tdr
 
 struct QuadCopter
 {
-    quantity<si::kilo<si::gram>> weight;
-    quantity<square(si::metre)> frontalArea;
-    quantity<one> thrustEfficiency;
-    quantity<one> aerodynamicEfficiency;
+    quantity<isq::mass[si::kilo<si::gram>]> weight;
+    quantity<isq::area[square(si::metre)]> frontalArea;
+    quantity<isq::maximum_efficiency[percent]> thrustEfficiency;
+    quantity<isq::maximum_efficiency[percent]> aerodynamicEfficiency;
 };
 
 struct Flight
 {
-    quantity<si::kilo<si::metre>> distance;
-    quantity<si::kilo<si::metre>> altitude;
-    quantity<si::metre / si::second> speed;
+    quantity<isq::distance[si::metre]> distance;
+    quantity<si::metre> altitude;
+    quantity<isq::speed[si::metre / si::second]> speed;
 
-    [[nodiscard]] constexpr auto withDistance(QuantityOf<isq::length> auto newDistance) const -> Flight
+    [[nodiscard]] constexpr auto withDistance(QuantityOf<isq::distance> auto newDistance) const -> Flight
     {
         auto tmp     = *this;
         tmp.distance = newDistance;
