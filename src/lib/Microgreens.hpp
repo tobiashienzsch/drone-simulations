@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Finance.hpp"
+
 #include <fmt/format.h>
 #include <fmt/os.h>
 
@@ -11,27 +13,6 @@ using namespace mp_units;
 
 namespace tdr
 {
-
-namespace finance
-{
-
-// clang-format off
-inline constexpr struct dim_currency : base_dimension<"$"> {} dim_currency;
-inline constexpr struct currency : quantity_spec<currency, dim_currency> {} currency;
-
-inline constexpr struct euro : named_unit<"EUR", kind_of<currency>> {} euro;
-inline constexpr struct us_dollar : named_unit<"USD", kind_of<currency>> {} us_dollar;
-// clang-format on
-
-namespace unit_symbols
-{
-
-inline constexpr auto EUR = euro;
-inline constexpr auto USD = us_dollar;
-
-}  // namespace unit_symbols
-
-}  // namespace finance
 
 struct Microgreen
 {
