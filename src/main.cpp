@@ -63,6 +63,11 @@ auto main() -> int
 
     tdr::powerOutput(panel, location);
 
+    static constexpr auto light = tdr::GrowLight{
+        .power      = 25.0 * W,
+        .efficiency = 90.0 * percent,
+    };
+
     static constexpr auto container = tdr::IntermodalContainer{
         .length = 12.032 * m,
         .width  = 2.352 * m,
@@ -76,7 +81,7 @@ auto main() -> int
         .tray   = 25.0 * cm,
     };
 
-    tdr::growContainer(container, rack);
+    tdr::growContainer(container, rack, light);
 
     return EXIT_SUCCESS;
 }
