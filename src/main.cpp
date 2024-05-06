@@ -56,15 +56,15 @@ auto main() -> int
     };
 
     static constexpr auto panel = tdr::SolarPanel{
-        .width      = 500.0 * cm,
-        .height     = 100.0 * cm,
+        .width      = 12.0 * m,
+        .height     = 2.0 * m,
         .efficiency = 18.0 * percent,
     };
 
     tdr::powerOutput(panel, location);
 
     static constexpr auto light = tdr::GrowLight{
-        .power      = 25.0 * W,
+        .power      = 15.0 * W,
         .efficiency = 90.0 * percent,
     };
 

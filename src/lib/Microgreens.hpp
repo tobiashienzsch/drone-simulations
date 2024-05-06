@@ -25,10 +25,10 @@ struct GrowLight
     {
         using namespace mp_units::si::unit_symbols;
 
-        constexpr QuantityOf<isq::specific_heat_capacity> auto capacity = 1'005.0 * J / (kg * K);
-        constexpr QuantityOf<isq::density> auto density                 = 1.225 * kg / m3;
+        constexpr QuantityOf<isq::specific_heat_capacity> auto c_p = 1'005.0 * J / (kg * K);
+        constexpr QuantityOf<isq::density> auto rho                = 1.225 * kg / m3;
 
-        return waste().in(J / s) / (v * density * capacity);
+        return waste().in(J / s) / (v * rho * c_p);
     }
 };
 
@@ -49,6 +49,19 @@ struct GrowRack
     quantity<isq::width[si::metre]> tray;
 };
 
+[[nodiscard]] constexpr auto airConditionPower(QuantityOf<isq::volume> auto V,
+                                               QuantityOf<isq::thermodynamic_temperature> auto delta_T,
+                                               QuantityOf<isq::time> auto lightTime) -> QuantityOf<isq::power> auto
+{
+    using namespace mp_units::si::unit_symbols;
+
+    constexpr QuantityOf<isq::specific_heat_capacity> auto c_p = 1'005.0 * J / (kg * K);
+    constexpr QuantityOf<isq::density> auto rho                = 1.225 * kg / m3;
+
+    auto const Q = c_p * rho * V * delta_T;
+    return Q / lightTime;
+}
+
 auto growContainer(IntermodalContainer const& ic, GrowRack const& rack, GrowLight const& light) -> void
 {
     using namespace mp_units::si::unit_symbols;
@@ -61,30 +74,41 @@ auto growContainer(IntermodalContainer const& ic, GrowRack const& rack, GrowLigh
     QuantityOf<dimensionless> auto shelfs = rack.shelfs * racks;
     QuantityOf<dimensionless> auto trays  = floor<one>(rack.width / rack.tray) * shelfs;
 
-    QuantityOf<dimensionless> auto lightsPerShelf = 2.0 * one;
-    QuantityOf<dimensionless> auto lights         = lightsPerShelf * shelfs;
-    QuantityOf<isq::power> auto power             = light.power * lights;
-    QuantityOf<isq::power> auto waste             = light.waste() * lights;
-    auto heat                                     = light.heat(volume) * lights;
+    QuantityOf<dimensionless> auto lightsPerShelf                    = 2.0 * one;
+    QuantityOf<dimensionless> auto lights                            = lightsPerShelf * shelfs;
+    QuantityOf<isq::power> auto lightPower                           = light.power * lights;
+    QuantityOf<isq::power> auto waste                                = light.waste() * lights;
+    QuantityOf<isq::thermodynamic_temperature / isq::time> auto heat = light.heat(volume) * lights;
+    QuantityOf<isq::time> auto lightTime                             = (1.0 * h).in(s);
+    QuantityOf<isq::thermodynamic_temperature> auto delta_T          = heat * lightTime;
+    QuantityOf<isq::power> auto cooling      = tdr::airConditionPower(volume, delta_T, lightTime);
+    QuantityOf<isq::power> auto totalPower   = lightPower + cooling;
+    QuantityOf<isq::energy> auto totalEnergy = totalPower * 12 * h;
 
     fmt::println("GrowContainer:");
     fmt::println("-------------");
-    fmt::println("Length:     {}", ic.length.in(m));
-    fmt::println("Width:      {}", ic.width.in(m));
-    fmt::println("Height:     {}", ic.height.in(m));
-    fmt::println("Area:       {::N[.2f]}", area.in(m2));
-    fmt::println("Volume:     {::N[.2f]}\n", volume.in(m3));
-    fmt::println("Racks:      {}", racks);
-    fmt::println("Shelfs:     {}", shelfs);
-    fmt::println("Trays:      {}", trays);
-    fmt::println("Tray-Area:  {}\n", (rack.tray * rack.depth * trays).in(m2));
-    fmt::println("Light:      {}", light.power.in(W));
-    fmt::println("Efficiency: {}\n", light.efficiency.in(percent));
-    fmt::println("Lights:     {}", lights);
-    fmt::println("Power:      {}", power.in(W));
-    fmt::println("Waste:      {::N[.2f]}", waste.in(W));
-    fmt::println("Heat:       {}", heat);
-    fmt::println("Heat-12h:   {::N[.3f]}", heat * 1800.0 * s);
+    fmt::println("Length:       {}", ic.length.in(m));
+    fmt::println("Width:        {}", ic.width.in(m));
+    fmt::println("Height:       {}", ic.height.in(m));
+    fmt::println("Area:         {::N[.2f]}", area.in(m2));
+    fmt::println("Volume:       {::N[.2f]}\n", volume.in(m3));
+
+    fmt::println("Racks:        {}", racks);
+    fmt::println("Shelfs:       {}", shelfs);
+    fmt::println("Trays:        {}", trays);
+    fmt::println("Tray-Area:    {}\n", (rack.tray * rack.depth * trays).in(m2));
+
+    fmt::println("Light:        {}", light.power.in(W));
+    fmt::println("Efficiency:   {}\n", light.efficiency.in(percent));
+
+    fmt::println("Lights:       {}", lights);
+    fmt::println("Lights-Power: {}", lightPower.in(W));
+    fmt::println("Waste:        {::N[.2f]}", waste.in(W));
+    fmt::println("Heat:         {::N[.5f]}", heat);
+    fmt::println("Heat-1h:      {::N[.3f]}", delta_T);
+    fmt::println("Cooling-1h:   {}", cooling.in(W));
+    fmt::println("Power:        {}", totalPower.in(W));
+    fmt::println("Energy:       {}", totalEnergy.in(kW * h));
     fmt::println("");
 }
 
