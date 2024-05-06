@@ -4,12 +4,9 @@
 #include "QuadCopter.hpp"
 #include "SolarPanel.hpp"
 
-#include <mp-units/ostream.h>
 #include <mp-units/systems/cgs.h>
 #include <mp-units/systems/isq.h>
 #include <mp-units/systems/si.h>
-
-#include <iostream>
 
 auto main() -> int
 {
@@ -39,16 +36,6 @@ auto main() -> int
     tdr::hydrogenEnergyIn(5.0 * l);
     tdr::hydrogenEnergyIn(10.0 * l);
     tdr::hydrogenEnergyIn(25.0 * l);
-
-    tdr::harvistReport({
-        .seeds     = 13.0 * g,
-        .price     = 18.0 * EUR / kg,
-        .light     = 8.0 * h / d,
-        .growPhase = 10.0 * d,
-        .restPhase = 2.0 * d,
-        .harvist   = 325.0 * g,
-        .msrp      = 13.0 * EUR / kg,
-    });
 
     static constexpr auto location = tdr::SolarPanelLocation{
         .irradiance = 1'000.0 * W / m2,
@@ -81,7 +68,24 @@ auto main() -> int
         .tray   = 25.0 * cm,
     };
 
-    tdr::growContainer(container, rack, light);
+    report(tdr::GrowContainer{
+        .container      = container,
+        .rack           = rack,
+        .light          = light,
+        .rows           = 2 * one,
+        .lightsPerShelf = 2 * one,
+    });
+    report(tdr::Microgreen{
+        .price       = 18.0 * EUR / kg,
+        .seeds       = 13.0 * g,
+        .water       = 0.25 * l / d,
+        .light       = 8.0 * h / d,
+        .germination = 0.0 * d,
+        .grow        = 10.0 * d,
+        .rest        = 2.0 * d,
+        .harvist     = 325.0 * g,
+        .msrp        = 13.0 * EUR / kg,
+    });
 
     return EXIT_SUCCESS;
 }
