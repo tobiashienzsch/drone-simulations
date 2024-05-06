@@ -6,6 +6,7 @@
 #include <fmt/os.h>
 
 #include <mp-units/format.h>
+#include <mp-units/math.h>
 #include <mp-units/systems/isq.h>
 #include <mp-units/systems/si.h>
 
@@ -13,6 +14,55 @@ using namespace mp_units;
 
 namespace tdr
 {
+
+struct IntermodalContainer
+{
+    quantity<isq::length[si::metre]> length;
+    quantity<isq::width[si::metre]> width;
+    quantity<isq::height[si::metre]> height;
+};
+
+struct GrowRack
+{
+    quantity<isq::depth[si::metre]> depth;
+    quantity<isq::width[si::metre]> width;
+    quantity<isq::height[si::metre]> height;
+
+    quantity<one> shelfs;
+    quantity<isq::width[si::metre]> tray;
+};
+
+auto growContainer(IntermodalContainer const& ic, GrowRack const& rack) -> void
+{
+    using namespace mp_units::si::unit_symbols;
+
+    QuantityOf<isq::area> auto area     = ic.length * ic.width;
+    QuantityOf<isq::volume> auto volume = area * ic.height;
+
+    QuantityOf<dimensionless> auto rows   = 2.0 * one;
+    QuantityOf<dimensionless> auto racks  = floor<one>(ic.length / rack.width) * rows;
+    QuantityOf<dimensionless> auto shelfs = rack.shelfs * racks;
+    QuantityOf<dimensionless> auto trays  = floor<one>(rack.width / rack.tray) * shelfs;
+
+    QuantityOf<dimensionless> auto lightsPerShelf = 2.0 * one;
+    QuantityOf<dimensionless> auto lights         = lightsPerShelf * shelfs;
+    QuantityOf<isq::power> auto lightPower        = 15.0 * W;
+    QuantityOf<isq::power> auto power             = lightPower * lights;
+
+    fmt::println("GrowContainer:");
+    fmt::println("-------------");
+    fmt::println("Length:   {}", ic.length.in(m));
+    fmt::println("Width:    {}", ic.width.in(m));
+    fmt::println("Height:   {}", ic.height.in(m));
+    fmt::println("Area:     {::N[.2f]}", area.in(m2));
+    fmt::println("Volume:   {::N[.2f]}\n", volume.in(m3));
+    fmt::println("Racks:    {}", racks);
+    fmt::println("Shelfs:   {}", shelfs);
+    fmt::println("Trays:    {}\n", trays);
+    fmt::println("Lights:   {}", lights);
+    fmt::println("Power:    {}", power.in(kW));
+    fmt::println("");
+}
 
 struct Microgreen
 {

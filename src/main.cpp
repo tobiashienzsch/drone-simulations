@@ -63,5 +63,20 @@ auto main() -> int
 
     tdr::powerOutput(panel, location);
 
+    static constexpr auto container = tdr::IntermodalContainer{
+        .length = 12.032 * m,
+        .width  = 2.352 * m,
+        .height = 2.385 * m,
+    };
+    static constexpr auto rack = tdr::GrowRack{
+        .depth  = 0.5 * m,
+        .width  = 1.0 * m,
+        .height = 2.0 * m,
+        .shelfs = 5 * one,
+        .tray   = 25.0 * cm,
+    };
+
+    tdr::growContainer(container, rack);
+
     return EXIT_SUCCESS;
 }
