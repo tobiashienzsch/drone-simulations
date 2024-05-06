@@ -16,14 +16,14 @@ namespace tdr
 
 struct Microgreen
 {
-    quantity<si::gram> seeds;
+    quantity<isq::mass[si::gram]> seeds;
     quantity<finance::euro / si::kilo<si::gram>> price;
 
     quantity<one> light;
-    quantity<si::day> growPhase;
-    quantity<si::day> restPhase;
+    quantity<isq::time[si::day]> growPhase;
+    quantity<isq::time[si::day]> restPhase;
 
-    quantity<si::gram> harvist;
+    quantity<isq::mass[si::gram]> harvist;
     quantity<finance::euro / si::kilo<si::gram>> msrp;
 };
 
