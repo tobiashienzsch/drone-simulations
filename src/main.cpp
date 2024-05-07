@@ -68,14 +68,15 @@ auto main() -> int
         .tray   = 25.0 * cm,
     };
 
-    report(tdr::GrowContainer{
+    static constexpr auto gc = tdr::GrowContainer{
         .container      = container,
         .rack           = rack,
         .light          = light,
         .rows           = 2 * one,
         .lightsPerShelf = 2 * one,
-    });
-    report(tdr::Microgreen{
+    };
+
+    static constexpr auto plant = tdr::Microgreen{
         .price       = 18.0 * EUR / kg,
         .seeds       = 13.0 * g,
         .water       = 0.25 * l / d,
@@ -85,7 +86,10 @@ auto main() -> int
         .rest        = 2.0 * d,
         .harvist     = 325.0 * g,
         .msrp        = 13.0 * EUR / kg,
-    });
+    };
+
+    report(gc);
+    report(plant, gc);
 
     return EXIT_SUCCESS;
 }
