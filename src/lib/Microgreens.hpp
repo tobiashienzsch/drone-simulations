@@ -180,8 +180,8 @@ inline auto report(Microgreen const& plant) -> void
     QuantityOf<finance::currency> auto value = plant.msrp * plant.harvist;
     QuantityOf<isq::time> auto cycle         = plant.germination + plant.grow + plant.rest;
 
-    fmt::println("Microgreens:");
-    fmt::println("-----------");
+    fmt::println("Microgreens-Tray(1020):");
+    fmt::println("----------------------");
     fmt::println("Seeds:       {}", plant.seeds.in(g));
     fmt::println("Price:       {::N[.2f]}\n", price.in(EUR));
 

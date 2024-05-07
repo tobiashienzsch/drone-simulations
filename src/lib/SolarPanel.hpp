@@ -14,35 +14,38 @@ namespace tdr
 
 struct SolarPanel
 {
+    struct Location
+    {
+        quantity<isq::irradiance[si::watt / square(si::metre)]> irradiance;
+        quantity<isq::time[si::hour]> daylight;
+    };
+
     quantity<isq::width[si::metre]> width;
     quantity<isq::height[si::metre]> height;
     quantity<isq::maximum_efficiency[percent]> efficiency;
 };
 
-struct SolarPanelLocation
-{
-    quantity<isq::irradiance[si::watt / square(si::metre)]> irradiance;
-    quantity<isq::time[si::hour]> daylight;
-};
-
-inline auto powerOutput(SolarPanel const& panel, SolarPanelLocation const& location) -> void
+inline auto powerOutput(SolarPanel const& panel, SolarPanel::Location const& location) -> void
 {
     using namespace mp_units::si::unit_symbols;
 
     QuantityOf<isq::area> auto area     = panel.width * panel.height;
-    QuantityOf<isq::power> auto power   = area * location.irradiance * panel.efficiency;
-    QuantityOf<isq::time> auto duration = location.daylight;
-    QuantityOf<isq::energy> auto energy = power * duration;
+    QuantityOf<isq::power> auto kWp     = area * (1.0 * kW / m2) * panel.efficiency;
+    QuantityOf<isq::power> auto output  = area * location.irradiance * panel.efficiency;
+    QuantityOf<isq::energy> auto energy = output * location.daylight;
 
     fmt::println("Solar panel:");
-    fmt::println("------------");
+    fmt::println("-----------");
     fmt::println("Width:      {::N[.3f]}", panel.width.in(cm));
     fmt::println("Height:     {::N[.3f]}", panel.height.in(cm));
     fmt::println("Area:       {::N[.3f]}", area.in(m2));
-    fmt::println("Irradiance: {}", location.irradiance);
     fmt::println("Efficiency: {}", panel.efficiency);
-    fmt::println("Power:      {::N[.3f]}", power.in(W));
-    fmt::println("Energy:     {::N[.3f]}", energy.in(W * h));
+    fmt::println("kWp:        {}\n", kWp.in(kW));
+
+    fmt::println("Irradiance: {}", location.irradiance);
+    fmt::println("Daylight:   {}", location.daylight.in(h));
+    fmt::println("Output:     {::N[.3f]}", output.in(kW));
+    fmt::println("Energy:     {::N[.3f]}", energy.in(kW * h));
     fmt::println("");
 }
 
