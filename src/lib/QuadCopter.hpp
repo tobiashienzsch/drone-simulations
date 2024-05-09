@@ -38,7 +38,7 @@ struct Flight
 
 struct QuadCopter
 {
-    quantity<isq::mass[si::kilo<si::gram>]> weight;
+    quantity<isq::mass[si::kilogram]> weight;
     quantity<isq::area[square(si::metre)]> frontalArea;
     quantity<isq::maximum_efficiency[percent]> thrustEfficiency;
     quantity<isq::maximum_efficiency[percent]> aerodynamicEfficiency;

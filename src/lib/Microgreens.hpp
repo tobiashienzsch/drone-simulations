@@ -19,7 +19,7 @@ using namespace mp_units;
 struct Microgreen
 {
     std::string name;
-    quantity<finance::euro / si::kilo<si::gram>> price;
+    quantity<finance::euro / si::kilogram> price;
 
     quantity<isq::mass[si::gram]> seeds;
     quantity<isq::volume[si::litre] / isq::time[si::day]> water;
@@ -30,7 +30,7 @@ struct Microgreen
     quantity<isq::time[si::day]> rest;
 
     quantity<isq::mass[si::gram]> yield;
-    quantity<finance::euro / si::kilo<si::gram>> msrp;
+    quantity<finance::euro / si::kilogram> msrp;
 };
 
 [[nodiscard]] auto loadMicrogreens(std::filesystem::path const& path) -> std::vector<Microgreen>;
