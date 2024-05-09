@@ -7,8 +7,15 @@
 
 #include <mp-units/format.h>
 #include <mp-units/math.h>
+#include <mp-units/systems/international.h>
 #include <mp-units/systems/isq.h>
 #include <mp-units/systems/si.h>
+
+#include <filesystem>
+#include <fstream>
+#include <sstream>
+#include <string>
+#include <vector>
 
 using namespace mp_units;
 
@@ -157,6 +164,7 @@ auto report(GrowContainer const& gc) -> void
 
 struct Microgreen
 {
+    std::string name;
     quantity<finance::euro / si::kilo<si::gram>> price;
 
     quantity<isq::mass[si::gram]> seeds;
@@ -167,7 +175,7 @@ struct Microgreen
     quantity<isq::time[si::day]> grow;
     quantity<isq::time[si::day]> rest;
 
-    quantity<isq::mass[si::gram]> harvist;
+    quantity<isq::mass[si::gram]> yield;
     quantity<finance::euro / si::kilo<si::gram>> msrp;
 };
 
@@ -177,7 +185,7 @@ inline auto report(Microgreen const& plant, GrowContainer const& gc) -> void
     using namespace finance::unit_symbols;
 
     QuantityOf<finance::currency> auto price = plant.price * plant.seeds;
-    QuantityOf<finance::currency> auto value = plant.msrp * plant.harvist;
+    QuantityOf<finance::currency> auto value = plant.msrp * plant.yield;
     QuantityOf<isq::time> auto cycle         = plant.germination + plant.grow + plant.rest;
     QuantityOf<dimensionless> auto cycles    = 30.0 * d / plant.grow;
 
@@ -195,22 +203,22 @@ inline auto report(Microgreen const& plant, GrowContainer const& gc) -> void
     fmt::println("Cycles:      {::N[.2f]}\n", cycles);
 
     fmt::println("Water-Usage: {}", (plant.water * (plant.grow + plant.rest)).in(l));
-    fmt::println("Harvist:     {::N[.2f]}", plant.harvist.in(g));
+    fmt::println("Yield:       {::N[.2f]}", plant.yield.in(g));
     fmt::println("MSRP:        {}", plant.msrp.in(EUR / kg));
     fmt::println("Value:       {::N[.2f]}", value.in(EUR));
     fmt::println("Profit:      {::N[.2f]}", (value - price).in(EUR));
     fmt::println("");
 
-    fmt::println("Microgreens-Container(Cycle):");
-    fmt::println("----------------------------");
-    fmt::println("Seeds:       {::N[.2f]}", (plant.seeds * gc.trays()).in(kg));
-    fmt::println("Price:       {::N[.2f]}\n", (price * gc.trays()).in(EUR));
+    // fmt::println("Microgreens-Container(Cycle):");
+    // fmt::println("----------------------------");
+    // fmt::println("Seeds:       {::N[.2f]}", (plant.seeds * gc.trays()).in(kg));
+    // fmt::println("Price:       {::N[.2f]}\n", (price * gc.trays()).in(EUR));
 
-    fmt::println("Water-Usage: {::N[.2f]}", (plant.water * (plant.grow + plant.rest) * gc.trays()).in(l));
-    fmt::println("Harvist:     {::N[.2f]}", (plant.harvist * gc.trays()).in(kg));
-    fmt::println("Value:       {::N[.2f]}", (value * gc.trays()).in(EUR));
-    fmt::println("Profit:      {::N[.2f]}", (value * gc.trays() - price * gc.trays()).in(EUR));
-    fmt::println("");
+    // fmt::println("Water-Usage: {::N[.2f]}", (plant.water * (plant.grow + plant.rest) * gc.trays()).in(l));
+    // fmt::println("Yield:       {::N[.2f]}", (plant.yield * gc.trays()).in(kg));
+    // fmt::println("Value:       {::N[.2f]}", (value * gc.trays()).in(EUR));
+    // fmt::println("Profit:      {::N[.2f]}", (value * gc.trays() - price * gc.trays()).in(EUR));
+    // fmt::println("");
 
     fmt::println("Microgreens-Container(Month):");
     fmt::println("----------------------------");
@@ -218,10 +226,68 @@ inline auto report(Microgreen const& plant, GrowContainer const& gc) -> void
     fmt::println("Price:       {::N[.2f]}\n", (price * gc.trays() * cycles).in(EUR));
 
     fmt::println("Water-Usage: {::N[.2f]}", (plant.water * (plant.grow + plant.rest) * gc.trays() * cycles).in(l));
-    fmt::println("Harvist:     {::N[.2f]}", (plant.harvist * gc.trays() * cycles).in(kg));
+    fmt::println("Yield:       {::N[.2f]}", (plant.yield * gc.trays() * cycles).in(kg));
     fmt::println("Value:       {::N[.2f]}", (value * gc.trays() * cycles).in(EUR));
     fmt::println("Profit:      {::N[.2f]}", (value * gc.trays() * cycles - price * gc.trays() * cycles).in(EUR));
     fmt::println("");
+}
+
+inline auto loadMicrogreens(std::filesystem::path const& path) -> std::vector<Microgreen>
+{
+    auto file = std::ifstream{path};
+
+    auto line = std::string{};
+
+    // skip header
+    std::getline(file, line);
+
+    auto result = std::vector<Microgreen>{};
+    while (std::getline(file, line))
+    {
+        auto ss    = std::stringstream(line);
+        auto token = std::string{};
+
+        // skip part number
+        std::getline(ss, token, ',');
+
+        // name
+        auto name = std::string{};
+        std::getline(ss, name, ',');
+
+        // seeds / tray
+        std::getline(ss, token, ',');
+        auto const seedsPerTray = std::stod(token) * si::gram;
+
+        // yield / tray
+        std::getline(ss, token, ',');
+        auto const yieldPerTray = std::stod(token) * international::ounce;
+
+        // days / tray
+        std::getline(ss, token, ',');
+        auto const daysPerTray = std::stod(token) * si::day;
+
+        // seed-price / 25lb
+        std::getline(ss, token, ',');
+        auto const seedPrice = std::stod(token) * finance::euro / (25.0 * international::pound);
+
+        result.push_back(Microgreen{
+            .name = name,
+
+            .price = seedPrice,
+            .seeds = seedsPerTray,
+            .water = 0.25 * si::litre / si::day,
+            .light = 8.0 * si::hour / si::day,
+
+            .germination = 0.0 * si::day,
+            .grow        = daysPerTray,
+            .rest        = 2.0 * si::day,
+
+            .yield = yieldPerTray,
+            .msrp  = 13.0 * finance::euro / si::kilogram,
+        });
+    }
+
+    return result;
 }
 
 }  // namespace tdr
