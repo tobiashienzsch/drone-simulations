@@ -7,7 +7,7 @@
 #include <mp-units/systems/isq.h>
 #include <mp-units/systems/si.h>
 
-namespace tdr
+namespace tug
 {
 
 using namespace mp_units;
@@ -77,4 +77,4 @@ inline auto compressGas() -> void
     fmt::println("");
 }
 
-}  // namespace tdr
+}  // namespace tug

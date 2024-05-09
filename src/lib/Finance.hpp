@@ -2,7 +2,7 @@
 
 #include <mp-units/framework.h>
 
-namespace tdr
+namespace tug
 {
 
 namespace finance
@@ -26,4 +26,4 @@ inline constexpr auto USD = us_dollar;
 
 }  // namespace finance
 
-}  // namespace tdr
+}  // namespace tug

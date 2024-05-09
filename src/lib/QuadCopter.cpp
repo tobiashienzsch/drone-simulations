@@ -8,7 +8,7 @@
 #include <mp-units/format.h>
 #include <mp-units/math.h>
 
-namespace tdr
+namespace tug
 {
 
 auto estimatePowerConsumption(QuadCopter const& copter, Flight const& flight) -> void
@@ -79,4 +79,4 @@ auto estimatePowerConsumption(QuadCopter const& copter, Flight const& flight) ->
     fmt::println("");
 }
 
-}  // namespace tdr
+}  // namespace tug

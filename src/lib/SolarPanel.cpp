@@ -5,7 +5,7 @@
 
 #include <mp-units/format.h>
 
-namespace tdr
+namespace tug
 {
 
 auto report(SolarPanel const& panel, SolarPanel::Location const& location) -> void
@@ -32,4 +32,4 @@ auto report(SolarPanel const& panel, SolarPanel::Location const& location) -> vo
     fmt::println("");
 }
 
-}  // namespace tdr
+}  // namespace tug

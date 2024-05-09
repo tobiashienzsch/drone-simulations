@@ -3,7 +3,7 @@
 #include <mp-units/systems/isq.h>
 #include <mp-units/systems/si.h>
 
-namespace tdr
+namespace tug
 {
 
 using namespace mp_units;
@@ -18,4 +18,4 @@ struct IntermodalContainer
     [[nodiscard]] constexpr auto volume() const noexcept -> QuantityOf<isq::volume> auto { return area() * height; }
 };
 
-}  // namespace tdr
+}  // namespace tug

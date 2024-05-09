@@ -3,7 +3,7 @@
 #include <mp-units/systems/isq.h>
 #include <mp-units/systems/si.h>
 
-namespace tdr
+namespace tug
 {
 
 using namespace mp_units;
@@ -23,4 +23,4 @@ struct SolarPanel
 
 auto report(SolarPanel const& panel, SolarPanel::Location const& location) -> void;
 
-}  // namespace tdr
+}  // namespace tug

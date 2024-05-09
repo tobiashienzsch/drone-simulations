@@ -8,7 +8,7 @@
 #include <mp-units/systems/isq.h>
 #include <mp-units/systems/si.h>
 
-namespace tdr
+namespace tug
 {
 
 using namespace mp_units;
@@ -62,4 +62,4 @@ temperatureAt(QuantityOf<isq::altitude> auto altitude) -> QuantityOf<isq::thermo
     return (P * M) / (R * T);
 }
 
-}  // namespace tdr
+}  // namespace tug

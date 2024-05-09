@@ -11,7 +11,7 @@
 #include <filesystem>
 #include <vector>
 
-namespace tdr
+namespace tug
 {
 
 using namespace mp_units;
@@ -97,4 +97,4 @@ struct GrowContainer
 auto report(GrowContainer const& gc) -> void;
 auto report(GrowContainer const& gc, Microgreen const& plant) -> void;
 
-}  // namespace tdr
+}  // namespace tug

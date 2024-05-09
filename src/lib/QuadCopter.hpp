@@ -3,7 +3,7 @@
 #include <mp-units/systems/isq.h>
 #include <mp-units/systems/si.h>
 
-namespace tdr
+namespace tug
 {
 
 using namespace mp_units;
@@ -46,4 +46,4 @@ struct QuadCopter
 
 auto estimatePowerConsumption(QuadCopter const& copter, Flight const& flight) -> void;
 
-}  // namespace tdr
+}  // namespace tug

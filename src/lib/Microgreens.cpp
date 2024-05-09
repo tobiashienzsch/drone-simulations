@@ -10,7 +10,7 @@
 #include <sstream>
 #include <string>
 
-namespace tdr
+namespace tug
 {
 
 auto loadMicrogreens(std::filesystem::path const& path) -> std::vector<Microgreen>
@@ -168,4 +168,4 @@ auto report(GrowContainer const& gc, Microgreen const& plant) -> void
     fmt::println("");
 }
 
-}  // namespace tdr
+}  // namespace tug

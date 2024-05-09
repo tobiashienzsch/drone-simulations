@@ -3,7 +3,7 @@
 #include <mp-units/systems/isq.h>
 #include <mp-units/systems/si.h>
 
-namespace tdr
+namespace tug
 {
 
 using namespace mp_units;
@@ -38,4 +38,4 @@ struct GrowLight
     return Q / lightTime;
 }
 
-}  // namespace tdr
+}  // namespace tug
