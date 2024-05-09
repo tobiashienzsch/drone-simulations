@@ -8,10 +8,10 @@
 #include <mp-units/systems/isq.h>
 #include <mp-units/systems/si.h>
 
-using namespace mp_units;
-
 namespace tdr
 {
+
+using namespace mp_units;
 
 inline constexpr struct bar : named_unit<"bar", mag_ratio<100'000, 1> * si::pascal>
 {

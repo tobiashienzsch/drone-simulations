@@ -7,13 +7,13 @@
 #include <mp-units/systems/isq.h>
 #include <mp-units/systems/si.h>
 
-using namespace mp_units;
-
 namespace tdr
 {
 
-constexpr auto hydrogenEnergy(QuantityOf<isq::mass_density> auto density,
-                              QuantityOf<isq::volume> auto volume) -> QuantityOf<isq::energy> auto
+using namespace mp_units;
+
+[[nodiscard]] constexpr auto hydrogenEnergy(QuantityOf<isq::mass_density> auto density,
+                                            QuantityOf<isq::volume> auto volume) -> QuantityOf<isq::energy> auto
 {
     using namespace mp_units::si::unit_symbols;
     constexpr auto const lowerHeatingValue = 33.3 * kW * h / kg;

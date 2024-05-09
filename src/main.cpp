@@ -79,50 +79,6 @@ auto main(int argc, char const** argv) -> int
         .lightsPerShelf = 2 * one,
     };
 
-    static auto const plant = tdr::Microgreen{
-        .name        = "Generic",
-        .price       = 18.0 * EUR / kg,
-        .seeds       = 13.0 * g,
-        .water       = 0.25 * l / d,
-        .light       = 8.0 * h / d,
-        .germination = 0.0 * d,
-        .grow        = 10.0 * d,
-        .rest        = 2.0 * d,
-        .yield       = 325.0 * g,
-        .msrp        = 13.0 * EUR / kg,
-    };
-
-    static auto const basil = tdr::Microgreen{
-        .name        = "Basil",
-        .price       = 50.0 * EUR / kg,
-        .seeds       = 6.5 * g,
-        .water       = 0.25 * l / d,
-        .light       = 8.0 * h / d,
-        .germination = 0.0 * d,
-        .grow        = 17.0 * d,
-        .rest        = 2.0 * d,
-        .yield       = 7.5 * oz,
-        .msrp        = 15.0 * EUR / kg,
-    };
-
-    static auto const tokyoBekana = tdr::Microgreen{
-        .name        = "Tokyo Bekana",
-        .price       = 70.0 * EUR / kg,
-        .seeds       = 14.0 * g,
-        .water       = 0.25 * l / d,
-        .light       = 8.0 * h / d,
-        .germination = 0.0 * d,
-        .grow        = 8.0 * d,
-        .rest        = 2.0 * d,
-        .yield       = 15.0 * oz,
-        .msrp        = 12.0 * EUR / kg,
-    };
-
-    report(plant, gc);
-    report(basil, gc);
-    report(tokyoBekana, gc);
-    report(gc);
-
     if (argc == 2)
     {
         auto plants = tdr::loadMicrogreens(argv[1]);
@@ -143,6 +99,8 @@ auto main(int argc, char const** argv) -> int
             fmt::println("");
         }
     }
+
+    report(gc);
 
     return EXIT_SUCCESS;
 }
