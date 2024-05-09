@@ -21,6 +21,6 @@ struct SolarPanel
     quantity<isq::maximum_efficiency[percent]> efficiency;
 };
 
-auto powerOutput(SolarPanel const& panel, SolarPanel::Location const& location) -> void;
+auto report(SolarPanel const& panel, SolarPanel::Location const& location) -> void;
 
 }  // namespace tdr

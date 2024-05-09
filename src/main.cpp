@@ -51,7 +51,7 @@ auto main(int argc, char const** argv) -> int
     //     .efficiency = 18.0 * percent,
     // };
 
-    // tdr::powerOutput(panel, location);
+    // tdr::report(panel, location);
 
     static constexpr auto light = tdr::GrowLight{
         .power      = 15.0 * W,
@@ -87,16 +87,14 @@ auto main(int argc, char const** argv) -> int
 
         for (auto const& plant : plants)
         {
-            fmt::println("---------------------------");
-            fmt::println("{}", plant.name);
-            report(plant, gc);
-            // fmt::println("Price:            {::N[.2f]}", plant.price.in(EUR / kg));
-            // fmt::println("Seeds:            {::N[.2f]}", plant.seeds.in(g));
-            // fmt::println("Grow-Phase:       {::N[.2f]}", plant.grow.in(d));
-            // fmt::println("Yield:            {::N[.2f]}", plant.yield.in(g));
-            // fmt::println("Yield/Days:       {::N[.2f]}", (plant.yield / plant.grow).in(g / d));
-            // fmt::println("Yield/Days/Seeds: {::N[.2f]}", plant.yield / plant.seeds / plant.grow);
+            fmt::println("{:-^25}", plant.name);
+            fmt::println("Price:      {::N[.2f]}", plant.price.in(EUR / kg));
+            fmt::println("Seeds:      {::N[.2f]}", plant.seeds.in(g / m2));
+            fmt::println("Grow-Phase: {::N[.2f]}", plant.grow.in(d));
+            fmt::println("Yield:      {::N[.2f]}", plant.yield.in(g));
+            fmt::println("Yield/Days: {::N[.2f]}", (plant.yield / plant.grow).in(g / d));
             fmt::println("");
+            // report(gc, plant);
         }
     }
 

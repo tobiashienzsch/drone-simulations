@@ -37,7 +37,8 @@ auto loadMicrogreens(std::filesystem::path const& path) -> std::vector<Microgree
 
         // seeds / tray
         std::getline(ss, token, ',');
-        auto const seedsPerTray = std::stod(token) * si::gram;
+        auto const trayArea     = (10.0 * international::inch) * (20.0 * international::inch);
+        auto const seedsPerTray = std::stod(token) * si::gram / trayArea;
 
         // yield / tray
         std::getline(ss, token, ',');
@@ -78,9 +79,9 @@ auto report(GrowContainer const& gc) -> void
 
     QuantityOf<isq::time> auto lightTime                    = (1.0 * h).in(s);
     QuantityOf<isq::thermodynamic_temperature> auto delta_T = gc.heat() * lightTime;
-    QuantityOf<isq::power> auto cooling    = tdr::airConditionPower(gc.container.volume(), delta_T, lightTime);
-    QuantityOf<isq::power> auto totalPower = gc.powerLights() + cooling;
-    QuantityOf<isq::energy / isq::time> auto totalEnergy = totalPower * 12 * h / d;
+    QuantityOf<isq::power> auto cooling                  = airConditionPower(gc.container.volume(), delta_T, lightTime);
+    QuantityOf<isq::power> auto totalPower               = gc.powerLights() + cooling;
+    QuantityOf<isq::energy / isq::time> auto totalEnergy = totalPower * 8 * h / d;
 
     auto energyCost = 0.31 * EUR / (kW * h);
 
@@ -112,19 +113,21 @@ auto report(GrowContainer const& gc) -> void
     fmt::println("");
 }
 
-auto report(Microgreen const& plant, GrowContainer const& gc) -> void
+auto report(GrowContainer const& gc, Microgreen const& plant) -> void
 {
     using namespace mp_units::si::unit_symbols;
     using namespace finance::unit_symbols;
 
-    QuantityOf<finance::currency> auto price = plant.price * plant.seeds;
+    QuantityOf<isq::area> auto trayArea      = (10.0 * international::inch) * (20.0 * international::inch);
+    QuantityOf<isq::mass> auto seeds         = plant.seeds * trayArea;
+    QuantityOf<finance::currency> auto price = seeds * plant.price;
     QuantityOf<finance::currency> auto value = plant.msrp * plant.yield;
     QuantityOf<isq::time> auto cycle         = plant.germination + plant.grow + plant.rest;
     QuantityOf<dimensionless> auto cycles    = 30.0 * d / plant.grow;
 
     fmt::println("Microgreens-Tray(1020):");
     fmt::println("----------------------");
-    fmt::println("Seeds:       {}", plant.seeds.in(g));
+    fmt::println("Seeds:       {}", seeds.in(g));
     fmt::println("Price:       {::N[.2f]}\n", price.in(EUR));
 
     fmt::println("Water:       {}", plant.water.in(si::milli<si::litre> / d));
@@ -144,7 +147,7 @@ auto report(Microgreen const& plant, GrowContainer const& gc) -> void
 
     fmt::println("Microgreens-Container(Cycle):");
     fmt::println("----------------------------");
-    fmt::println("Seeds:       {::N[.2f]}", (plant.seeds * gc.trays()).in(kg));
+    fmt::println("Seeds:       {::N[.2f]}", (seeds * gc.trays()).in(kg));
     fmt::println("Price:       {::N[.2f]}\n", (price * gc.trays()).in(EUR));
 
     fmt::println("Water-Usage: {::N[.2f]}", (plant.water * (plant.grow + plant.rest) * gc.trays()).in(l));
@@ -155,7 +158,7 @@ auto report(Microgreen const& plant, GrowContainer const& gc) -> void
 
     fmt::println("Microgreens-Container(Month):");
     fmt::println("----------------------------");
-    fmt::println("Seeds:       {::N[.2f]}", (plant.seeds * gc.trays() * cycles).in(kg));
+    fmt::println("Seeds:       {::N[.2f]}", (seeds * gc.trays() * cycles).in(kg));
     fmt::println("Price:       {::N[.2f]}\n", (price * gc.trays() * cycles).in(EUR));
 
     fmt::println("Water-Usage: {::N[.2f]}", (plant.water * (plant.grow + plant.rest) * gc.trays() * cycles).in(l));

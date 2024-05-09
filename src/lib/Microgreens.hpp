@@ -21,7 +21,7 @@ struct Microgreen
     std::string name;
     quantity<finance::euro / si::kilogram> price;
 
-    quantity<isq::mass[si::gram]> seeds;
+    quantity<isq::mass[si::gram] / isq::area[square(si::metre)]> seeds;
     quantity<isq::volume[si::litre] / isq::time[si::day]> water;
     quantity<isq::time[si::hour] / isq::time[si::day]> light;
 
@@ -95,6 +95,6 @@ struct GrowContainer
 };
 
 auto report(GrowContainer const& gc) -> void;
-auto report(Microgreen const& plant, GrowContainer const& gc) -> void;
+auto report(GrowContainer const& gc, Microgreen const& plant) -> void;
 
 }  // namespace tdr

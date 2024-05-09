@@ -8,7 +8,7 @@
 namespace tdr
 {
 
-auto powerOutput(SolarPanel const& panel, SolarPanel::Location const& location) -> void
+auto report(SolarPanel const& panel, SolarPanel::Location const& location) -> void
 {
     using namespace mp_units::si::unit_symbols;
 
