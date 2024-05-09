@@ -179,7 +179,7 @@ inline auto report(Microgreen const& plant, GrowContainer const& gc) -> void
     QuantityOf<finance::currency> auto price = plant.price * plant.seeds;
     QuantityOf<finance::currency> auto value = plant.msrp * plant.harvist;
     QuantityOf<isq::time> auto cycle         = plant.germination + plant.grow + plant.rest;
-    QuantityOf<dimensionless> auto cycles    = 30.0 * d / (plant.grow + plant.rest);
+    QuantityOf<dimensionless> auto cycles    = 30.0 * d / plant.grow;
 
     fmt::println("Microgreens-Tray(1020):");
     fmt::println("----------------------");
@@ -195,7 +195,7 @@ inline auto report(Microgreen const& plant, GrowContainer const& gc) -> void
     fmt::println("Cycles:      {::N[.2f]}\n", cycles);
 
     fmt::println("Water-Usage: {}", (plant.water * (plant.grow + plant.rest)).in(l));
-    fmt::println("Harvist:     {}", plant.harvist.in(g));
+    fmt::println("Harvist:     {::N[.2f]}", plant.harvist.in(g));
     fmt::println("MSRP:        {}", plant.msrp.in(EUR / kg));
     fmt::println("Value:       {::N[.2f]}", value.in(EUR));
     fmt::println("Profit:      {::N[.2f]}", (value - price).in(EUR));
@@ -203,24 +203,22 @@ inline auto report(Microgreen const& plant, GrowContainer const& gc) -> void
 
     fmt::println("Microgreens-Container(Cycle):");
     fmt::println("----------------------------");
-    fmt::println("Seeds:       {}", (plant.seeds * gc.trays()).in(kg));
+    fmt::println("Seeds:       {::N[.2f]}", (plant.seeds * gc.trays()).in(kg));
     fmt::println("Price:       {::N[.2f]}\n", (price * gc.trays()).in(EUR));
 
-    fmt::println("Water:       {}", (plant.water * gc.trays()).in(l / d));
-    fmt::println("Water-Usage: {}", (plant.water * (plant.grow + plant.rest) * gc.trays()).in(l));
-    fmt::println("Harvist:     {}", (plant.harvist * gc.trays()).in(kg));
+    fmt::println("Water-Usage: {::N[.2f]}", (plant.water * (plant.grow + plant.rest) * gc.trays()).in(l));
+    fmt::println("Harvist:     {::N[.2f]}", (plant.harvist * gc.trays()).in(kg));
     fmt::println("Value:       {::N[.2f]}", (value * gc.trays()).in(EUR));
     fmt::println("Profit:      {::N[.2f]}", (value * gc.trays() - price * gc.trays()).in(EUR));
     fmt::println("");
 
     fmt::println("Microgreens-Container(Month):");
     fmt::println("----------------------------");
-    fmt::println("Seeds:       {}", (plant.seeds * gc.trays() * cycles).in(kg));
+    fmt::println("Seeds:       {::N[.2f]}", (plant.seeds * gc.trays() * cycles).in(kg));
     fmt::println("Price:       {::N[.2f]}\n", (price * gc.trays() * cycles).in(EUR));
 
-    fmt::println("Water:       {}", (plant.water * gc.trays() * cycles).in(l / d));
-    fmt::println("Water-Usage: {}", (plant.water * (plant.grow + plant.rest) * gc.trays() * cycles).in(l));
-    fmt::println("Harvist:     {}", (plant.harvist * gc.trays() * cycles).in(kg));
+    fmt::println("Water-Usage: {::N[.2f]}", (plant.water * (plant.grow + plant.rest) * gc.trays() * cycles).in(l));
+    fmt::println("Harvist:     {::N[.2f]}", (plant.harvist * gc.trays() * cycles).in(kg));
     fmt::println("Value:       {::N[.2f]}", (value * gc.trays() * cycles).in(EUR));
     fmt::println("Profit:      {::N[.2f]}", (value * gc.trays() * cycles - price * gc.trays() * cycles).in(EUR));
     fmt::println("");
